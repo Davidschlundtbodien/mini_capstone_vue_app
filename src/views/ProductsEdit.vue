@@ -25,8 +25,15 @@
         <label for="imageUrl">Image</label>
         <input type="text" class="form-control" id="imageUrl" placeholder="Place an image url here" v-model="newProductImageUrl">
       </div>
-      <button type="submit" class="btn btn-info">Confirm Edit</button>
+      <div class="text-center">
+        <button type="submit" class="btn btn-info">Confirm Edit</button>
+      </div>
+
     </form>
+    <div class="text-center">
+      <button v-on:click="destroyProduct(product)" class="btn btn-danger">Delete</button>
+    </div>
+      
   </div>
 </template>
 
@@ -55,6 +62,14 @@ export default {
 
       axios.patch("/api/products/" + this.product.id, params).then(response => {
         this.$router.push("/products/" + this.product.id);
+      }).catch(error => {
+        this.errors = error.response.data.errors;
+      });
+    },
+    destroyProduct: function(product) {
+      axios.delete("/api/products/" + this.product.id).then(response => {
+        console.log("Product Removed", response.data);
+        this.$router.push("/");
       }).catch(error => {
         this.errors = error.response.data.errors;
       });

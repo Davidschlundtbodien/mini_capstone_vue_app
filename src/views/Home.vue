@@ -20,9 +20,6 @@
       </div>
 
       <div v-if="product === currentProduct">
-        <div>
-          <button v-on:click="destroyProduct(product)">Delete</button>
-        </div>
       </div> 
 
     </div>
@@ -75,14 +72,6 @@ export default {
       } else {
         this.currentProduct = product;
       }
-    },
-    destroyProduct: function(product) {
-      axios.delete("/api/products/" + product.id).then(response => {
-        console.log("Product Removed", response.data);
-        this.products.splice(this.products.indexOf(product),1);
-      }).catch(error => {
-        this.errors = error.response.data.errors;
-      });
     }
   }
 };
