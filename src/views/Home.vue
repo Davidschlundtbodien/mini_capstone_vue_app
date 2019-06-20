@@ -5,10 +5,23 @@
     <ul>
       <li v-for="error in errors">{{error}}</li>
     </ul>
+
     
+    <div class="form-group">
+      <label for="title">Search by Name</label>
+      <input type="text" class="form-control" id="title" placeholder="Enter product name..." v-model="nameFilter" list="names">
+    </div> 
 
+    <div class="form-group">
+      <button class="btn btn-info" v-on:click="setSortAttribute('name')">Sort by name A-Z</button>
+      <button class="btn btn-info" v-on:click="setSortAttribute('price')">Sort by price</button>
+    </div><br>
 
-    <div v-for="product in products">
+    <datalist id="names">
+      <option v-for="product in products">{{product.name}}</option>
+    </datalist> 
+
+    <div v-for="product in orderBy(filterBy(products, nameFilter), sortAttribute, sortAscending)">
       <h3>{{product.name}}</h3>
 
       <router-link v-bind:to="'/products/' + product.id">
@@ -30,8 +43,10 @@
 </style>
 
 <script>
+import Vue2Filters from "vue2-filters";
 import axios from "axios";
 export default {
+  mixins: [Vue2Filters.mixin],
 
   data: function() {
     return {
@@ -39,6 +54,9 @@ export default {
       errors: [],
       products: [],
       currentProduct: {},
+      nameFilter:"",
+      sortAttribute: "",
+      sortAscending: 1
     };
   },
   created: function() {
@@ -72,6 +90,14 @@ export default {
       } else {
         this.currentProduct = product;
       }
+    },
+    setSortAttribute: function(attribute) {
+      if (this.sortAttribute === attribute) {
+        this.sortAscending = this.sortAscending * -1;
+      } else {
+        this.sortAscending = 1;
+      }
+      this.sortAttribute = attribute;
     }
   }
 };
